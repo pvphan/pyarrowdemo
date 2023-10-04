@@ -6,23 +6,13 @@ services:
     command: python3 -u producer.py
     working_dir: /pyarrowdemo
     volumes:
-      - ~/git/pyarrowdemo:/pyarrowdemo:ro
-      - /tmp:/tmp
-    networks:
-      - ipcnetwork
+      - .:/pyarrowdemo:ro
 
   consumer:
     build: .
     command: python3 -u consumer.py
     working_dir: /pyarrowdemo
     volumes:
-      - ~/git/pyarrowdemo:/pyarrowdemo:ro
-      - /tmp:/tmp
-    networks:
-      - ipcnetwork
+      - .:/pyarrowdemo:ro
     depends_on:
       - producer
-
-networks:
-  ipcnetwork:
-    driver: bridge
