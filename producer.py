@@ -1,20 +1,38 @@
 # producer.py
 import time
 import pyarrow as pa
-
-data = [
-    pa.array([1, 2, 3, 4]),
-    pa.array(['foo', 'bar', 'baz', None]),
-    pa.array([True, None, False, True])
-]
+import socket
 
 
-batch = pa.record_batch(data, names=['f0', 'f1', 'f2'])
+def main():
+    data = [
+            pa.array([1, 2, 3, 4]),
+            pa.array(['foo', 'bar', 'baz', None]),
+            pa.array([True, None, False, True])
+    ]
 
-# Send the Arrow Array through IPC
-sink = "/tmp/sink"
-time.sleep(2)
-with pa.ipc.new_stream(sink, batch.schema) as writer:
-   writer.write_batch(batch)
+    batch = pa.record_batch(data, names=['f0', 'f1', 'f2'])
 
-print(f"{time.time():0.5f}: Producer: wrote\n{batch}")
+    host = "0.0.0.0"  # Listen on all available network interfaces
+    port = 12345
+
+    # Set up a socket server for IPC communication
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        server_socket.bind((host, port))
+        server_socket.listen()
+
+        print(f"Listening for clients on {host}:{port}")
+
+        # Accept incoming connections
+        sock, addr = server_socket.accept()
+
+        # # Send the Arrow Array through IPC
+        sink = sock.makefile("wb", 65536)
+        with pa.ipc.new_stream(sink, batch.schema) as writer:
+            writer.write_batch(batch)
+
+        print(f"IPC data sent to consumer at {addr}")
+
+
+if __name__ == "__main__":
+    main()

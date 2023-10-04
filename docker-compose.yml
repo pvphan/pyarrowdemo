@@ -20,6 +20,8 @@ services:
       - /tmp:/tmp
     networks:
       - ipcnetwork
+    depends_on:
+      - producer
 
 networks:
   ipcnetwork:
