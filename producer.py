@@ -1,14 +1,13 @@
-# producer.py
-import time
-import pyarrow as pa
 import socket
+
+import pyarrow as pa
 
 
 def main():
     data = [
-            pa.array([1, 2, 3, 4]),
-            pa.array(['foo', 'bar', 'baz', None]),
-            pa.array([True, None, False, True])
+        pa.array([1, 2, 3, 4, 5]),
+        pa.array(['foo', 'bar', 'baz', None, 'nice']),
+        pa.array([True, None, False, True, None])
     ]
 
     batch = pa.record_batch(data, names=['f0', 'f1', 'f2'])
@@ -26,7 +25,7 @@ def main():
         # Accept incoming connections
         sock, addr = server_socket.accept()
 
-        # # Send the Arrow Array through IPC
+        # Send the Arrow Array through IPC
         sink = sock.makefile("wb", 65536)
         with pa.ipc.new_stream(sink, batch.schema) as writer:
             writer.write_batch(batch)

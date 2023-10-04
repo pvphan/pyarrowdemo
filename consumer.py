@@ -1,10 +1,9 @@
-# consumer.py
-import time
-import pyarrow as pa
 import socket
 
-def main():
+import pyarrow as pa
 
+
+def main():
     host = "producer"  # The hostname of the producer container
     port = 12345
 
@@ -12,12 +11,13 @@ def main():
         client_socket.connect((host, port))
         print("Connected")
 
-        data = client_socket.recv(1024)
-        print(len(data))
+        data = client_socket.recv(4 * 1024)
         with pa.ipc.open_stream(data) as reader:
             schema = reader.schema
             batches = [b for b in reader]
+            print("schema:")
             print(schema)
+            print("batches:")
             print(batches)
 
 
