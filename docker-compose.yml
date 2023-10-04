@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  producer:
+    build: .
+    command: python3 -u producer.py
+    working_dir: /pyarrowdemo
+    volumes:
+      - ~/git/pyarrowdemo:/pyarrowdemo:ro
+      - /tmp:/tmp
+    networks:
+      - ipcnetwork
+
+  consumer:
+    build: .
+    command: python3 -u consumer.py
+    working_dir: /pyarrowdemo
+    volumes:
+      - ~/git/pyarrowdemo:/pyarrowdemo:ro
+      - /tmp:/tmp
+    networks:
+      - ipcnetwork
+
+networks:
+  ipcnetwork:
+    driver: bridge
