@@ -36,9 +36,7 @@ def main():
 
 def createBatch():
     num_points = 328 * 225
-    x = np.random.uniform(0, 1000, num_points).astype(np.float32)
-    y = np.random.uniform(0, 1000, num_points).astype(np.float32)
-    z = np.random.uniform(0, 1000, num_points).astype(np.float32)
+    x, y, z = [np.random.uniform(0, 1000, num_points).astype(np.float32) for _ in range(3)]
     values = np.random.randint(0, 256, num_points, dtype=np.uint8)
     batch = pa.record_batch(
         [x, y, z, values],
