@@ -7,6 +7,7 @@ services:
     working_dir: /pyarrowdemo
     volumes:
       - .:/pyarrowdemo:ro
+      - /tmp/pyarrowdemo:/tmp/pyarrowdemo
 
   consumer:
     build: .
@@ -14,5 +15,6 @@ services:
     working_dir: /pyarrowdemo
     volumes:
       - .:/pyarrowdemo:ro
+      - /tmp/pyarrowdemo:/tmp/pyarrowdemo
     depends_on:
       - producer
